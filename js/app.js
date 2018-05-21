@@ -1,26 +1,47 @@
 /*
  * Create a list that holds all of your cards
  */
+ 
  // HTML collection 
-var cardList = document.getElementsByClassName('deck');
+//var cardList = document.getElementsByClassName('deck');
+var cardsHtmlCollection = document.getElementsByClassName('card');
+console.log(cardsHtmlCollection);
 
 // Extract i tags content from each card class element
-for (let i = 0; i < cardList.length; i++ ) {
-	var cardName = cardList[i].getElementsByTagName('i');
-}	
+for (let i = 0; i < cardsHtmlCollection.length; i++ ) {
+	var cardList = cardsHtmlCollection[i]
+}
 
-console.log(cardName); // REMOVE 
+console.log(cardList);  // REMOVE 
 
+for (let j = 0; j < cardList.length; j++) {
+	var cardNames = cardList[j].child();
+	console.log(cardNames);
+}
+
+console.log(cardNames); // REMOVE
+
+// Make sure DOM fully loaded before other actions 
+document.addEventListener('DOMContentLoaded', function () {
+	console.log("DONE");  // REMOVE
+});
+
+var resetButton = document.querySelector(".restart");
+console.log(resetButton); // REMOVE 
+
+resetButton.addEventListener("click", function () {
+	shuffle(cardName); 
+	var moveCounter = 0;
+	var matchCounter = 0;
+	// Stop and reset timer
+	console.log("GOT TO HERE 2");// REMOVE
+});
+
+ //loop through each card and create its HTML
+ //add each card's HTML to the page
+ 
+// Display the cards on the page 
 // Shuffle the list of cards using provided "shuffle" method 
-shuffle(cardName);
-
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
-
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
@@ -32,9 +53,21 @@ function shuffle(array) {
         array[currentIndex] = array[randomIndex];
         array[randomIndex] = temporaryValue;
     }
-
     return array;
+    console.log ("GOT TO HERE 3") // REMOVE 
 }
+
+/*
+var resetButton = document.getElementByClassName("restart");
+// add class restart to button on pop-up window too!
+
+resetButton.addEventListener("click", function( {
+// start back at main 
+// call function shuffle(array);
+// reset moveCounter, matchCounter = 0
+// Stop and reset timer
+
+}); 
 
 
 /*
@@ -46,13 +79,12 @@ function shuffle(array) {
  *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
+ 
 
 target.addEventListener("click", function () {
 // when click on any card 
 // call cardDisplay function 
 // call openCardsList function 
-
 }
 
 
@@ -151,5 +183,6 @@ function starRating() {
 // if move counter <X display three stars 
 // note:  more stars is good :-) 
 }
+*/
 
 
