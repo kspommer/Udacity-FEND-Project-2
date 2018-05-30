@@ -1,45 +1,103 @@
+// Susan Pommer 
+// FEND May 2018 
+
 /*
  * Create a list that holds all of your cards
  */
- 
- // HTML collection 
-//var cardList = document.getElementsByClassName('deck');
+ // Build HTML collection of elements with class = cards
 var cardsHtmlCollection = document.getElementsByClassName('card');
-console.log(cardsHtmlCollection);
 
-// Extract i tags content from each card class element
-for (let i = 0; i < cardsHtmlCollection.length; i++ ) {
-	var cardList = cardsHtmlCollection[i]
+// Convert HTML Collection to an Array 
+// Help provided by:  https://stackoverflow.com/questions/222841/most-efficient-way-to-convert-an-htmlcollection-to-an-array
+var cardArray = [].slice.call(cardsHtmlCollection);
+
+// Create an empty array for card names (class name on i element)
+var cardNames = [];
+
+// Create an empty array for shuffled cards
+var shuffledCardNames = [];
+
+// Initialize new string variable (to hold new shuffled card HTML)
+var newCardContentHTML = '';
+
+// Loop to get card names (class name of i element)
+for (let j = 0; j < cardArray.length; j++) {
+	var card = cardArray[j].querySelector('i');
+	// add each card to array 
+	cardNames.push(card);
 }
 
-console.log(cardList);  // REMOVE 
-
-for (let j = 0; j < cardList.length; j++) {
-	var cardNames = cardList[j].child();
-	console.log(cardNames);
-}
-
-console.log(cardNames); // REMOVE
-
-// Make sure DOM fully loaded before other actions 
+// IMPORTANT: Ensure DOM fully loaded before other actions triggered!
 document.addEventListener('DOMContentLoaded', function () {
-	console.log("DONE");  // REMOVE
 });
 
+// reset button variable
 var resetButton = document.querySelector(".restart");
-console.log(resetButton); // REMOVE 
 
-resetButton.addEventListener("click", function () {
-	shuffle(cardName); 
+// actions driven when user hits reset button 
+resetButton.addEventListener("click", function() { 
+	// delete existing deck displayed
+	var deck = document.querySelector('.deck');
+	deck.remove();
+
+	// create new deck with class=deck
+	var newDeck = document.createElement('ul');
+	newDeck.classList.add("deck");
+	console.log(newDeck); // REMOVE 
+
+	// call function to suffle cards
+	shuffledCardNames = shuffle(cardNames); 
+	console.log(shuffledCardNames); // REMOVE
+
+	// refresh display of cards on screen
+	refreshDeckHTML(shuffledCardNames, newDeck);
+
+	// remove stars and reset number of moves 
+	resetStars();
+	resetNumberMoves();
+	
+	// initialize counters
 	var moveCounter = 0;
 	var matchCounter = 0;
-	// Stop and reset timer
-	console.log("GOT TO HERE 2");// REMOVE
-});
+	var numberOfCardClicks = 0;
 
- //loop through each card and create its HTML
- //add each card's HTML to the page
- 
+	// ADD STOP AND RESET TIMER
+
+	// Assign variable to all cards 
+	var cardNodesList = document.querySelectorAll(".card");
+	// convert NodeList to an array to use
+	var cardNodesArray = [].slice.call(cardNodesList);
+	// create array to hold all open cards
+	var openCardsNames = [];
+
+	cardNodesArray.forEach(function(card) {
+		card.addEventListener("click", function() { 
+			// if else to determine if need to check match / reset match counter 
+			if (numberOfCardClicks < 2) {
+				console.log("less");
+				// flip card (add class="open", class="show" - see CSS)
+				this.classList.add("open", "show");
+				// increment counters
+				numberOfCardClicks = numberOfCardClicks + 1; 
+				moveCounter = moveCounter + 1;
+			}	
+			else if (numberOfCardClicks == 2) {
+				// do not flip card
+				// do not change move counter
+				console.log("2");
+				// function checkMatch()
+			}		
+		});	
+	});	
+}); 
+
+//function checkMatch() {
+
+//}
+	
+
+// FUNCTIONS //
+
 // Display the cards on the page 
 // Shuffle the list of cards using provided "shuffle" method 
 // Shuffle function from http://stackoverflow.com/a/2450976
@@ -54,20 +112,48 @@ function shuffle(array) {
         array[randomIndex] = temporaryValue;
     }
     return array;
-    console.log ("GOT TO HERE 3") // REMOVE 
 }
 
-/*
-var resetButton = document.getElementByClassName("restart");
-// add class restart to button on pop-up window too!
+ // Loop through each card in shuffled deck and create its HTML
+ // Add each card's HTML to the page
+	// create HTML for each card
+	// display new reshuffled cards
+function refreshDeckHTML(shuffledCardNames, newDeck) {
+	for (i = 0; i < shuffledCardNames.length; i++) {
 
-resetButton.addEventListener("click", function( {
-// start back at main 
-// call function shuffle(array);
-// reset moveCounter, matchCounter = 0
-// Stop and reset timer
+		// create new li element 
+		var newCard = document.createElement('li')
+		
+		// add "class=card" to li element
+		newCard.classList.add("card");
 
-}); 
+		// create new <i> element with class fa and card name
+		// e.g. <i class "fa fa-bomb"></i>
+		var cardContent = shuffledCardNames[i];
+
+		// insert i element into li element  
+		newCard.appendChild(cardContent);
+		
+		// add to card newDeck
+		newDeck.appendChild(newCard);
+
+	}
+	// add new deck to <div class="container"> to get to display
+	var divBody = document.querySelector('.container')
+	divBody.appendChild(newDeck);
+} 
+
+// Reset stars so none are displayed
+function resetStars() {
+	var stars = document.querySelector('.stars');
+	stars.remove();
+}
+
+// Reset number of moves to 0
+function resetNumberMoves() {
+	var moves = document.querySelector('.moves'); 
+	moves.textContent = 0; 
+}
 
 
 /*
@@ -79,16 +165,34 @@ resetButton.addEventListener("click", function( {
  *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- 
+*/
 
-target.addEventListener("click", function () {
-// when click on any card 
-// call cardDisplay function 
-// call openCardsList function 
-}
+/*function openCard(numberOfCardClicks, moveCounter) {
+	// initialize counter variables
+	var numberOfCardClicks = 0;
+	var moveCounter = 0;
 
+	if (numberOfCardClicks < 2) {
+		console.log("less");	
+		// flip card (add class="open", class="show" - see CSS)
+		card.classList.add(".open", ".show");
+		// increment counters
+		numberOfCardClicks = numberOfCardClicks + 1; 
+		moveCounter = moveCounter + 1; 
+		// add card to open card list array
+	};	
+	else if (numberOfCardClicks === 2) {
+		console.log("2");
+		// function checkMatch()
+	};	
+	else {
+		console.log(">2");
+		var numberOfCardClicks = 0; 
+	};	
+};
+*/
 
-function openCard() {
+/*
 // when eventlistener for card click is clicked call this function 
 // display the card's symbol 
 // change from CSS for black card (back) to CSS for card with symbol (face)
@@ -139,7 +243,7 @@ function matchCounter() {
 // matchCounter = matchCounter + 1;
 }
 
-
+//https://albert-gonzalez.github.io/easytimer.js/
 function startTimer{
 // on first click (moveCounter = 1), of eventlistener, 
 // start timer
@@ -159,17 +263,8 @@ function resetTimer {
 // resets timer = 00.00.00
 }
 
-
-var resetButton = document.getElementByClassName("restart");
 // add class restart to button on pop-up window too!
 
-resetButton.addEventListener("click", function( {
-// start back at main 
-// call function shuffle(array);
-// reset moveCounter, matchCounter = 0
-// Stop and reset timer
-
-}); 
 
 function congratsPopup() {
 	// call this function when matchCounter = 8; 
@@ -178,11 +273,9 @@ function congratsPopup() {
 }
 
 function starRating() {
-// if moveCounter >Y, display one star
-// if moveCounter >X and < Y , display two stars
-// if move counter <X display three stars 
+// if moveCounter > Y, display one star
+// if moveCounter > X and < Y , display two stars
+// if move counter < X display three stars 
 // note:  more stars is good :-) 
 }
 */
-
-
