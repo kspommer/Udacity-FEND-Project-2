@@ -56,8 +56,8 @@ resetButton.addEventListener("click", function() {
 	
 	// initialize counters
 	var moveCounter = 0;
-	var matchCounter = 0;
-	var numberOfCardClicks = 0;
+	//var matchCounter = 0;
+	//var numberOfCardClicks = 0;
 
 	// ADD STOP AND RESET TIMER
 
@@ -74,38 +74,104 @@ resetButton.addEventListener("click", function() {
  // - if the list already has another card, check to see if the two cards match
 
 	cardNodesArray.forEach(function(card) {
-		card.addEventListener("click", function() { 
-			// if else to determine if need to check match / reset match counter 
-			if (numberOfCardClicks < 2) {
-				// flip card (add class="open", class="show" (see CSS)
-				card.classList.add("open", "show");
-				// determine card name
-				var openCard = card.querySelector("i").className;
-				// add open card to open card array
-				openCardNames.push(openCard);
-				console.log(openCardNames);
-				// increment counters
-				numberOfCardClicks = numberOfCardClicks + 1; 
-				moveCounter = moveCounter + 1;
-			}	
-			else if (numberOfCardClicks == 2) {
-				// do not flip card
-				// do not change move counter
-				console.log("2"); // REMOVE
-				// call function to check for match  
-				checkMatch();
+		card.addEventListener("click", function() {
+			// if click on card that is already open, take no action
+			if (card.className == "card open show") {
+				return; 
 			}
 			else {
-				console.log("what do we do here?") // REMOVE	
+				// length of open card array
+				var numberOpen = openCardNames.length
+				console.log(numberOpen);	
+				// open card or check for match 
+				if (numberOpen < 2) {
+					// call function to open card on click
+					moveCounter = openCard(card, moveCounter);
+					console.log(moveCounter); // REMOVE  
+					// call function to add card to array 
+					openCardNames = addToOpenCardArray(card, openCardNames);
+					console.log(openCardNames); // REMOVE 
+				}	
+			}
+			// if two items in array, check for match 
+			if (moveCounter == 2) {
+				// call function to check for match  
+				checkMatch(openCardNames);
 			}
 		});	
 	});	
 }); 
 
-function checkMatch() {
-	console.log("MATCH!") // REMOVE 
+
+function openCard(card, countMoves) {
+	// flip card (add class="open", class="show" (see CSS)
+	card.classList.add("open", "show");
+	console.log("flip");  // REMOVE 
+	// increment counter
+	countMoves = countMoves + 1;
+	console.log(countMoves); // REMOVE 
+	return countMoves; 
 }
-	
+
+function addToOpenCardArray(card, openCardNames) {
+	// determine open card name 
+	var openCard = card.querySelector("i").className;
+	// add open card to open card array
+	openCardNames.push(openCard);
+	console.log(openCardNames); // REMOVE 
+	return openCardNames; 
+}
+
+// if match, call matchedCardsLock
+// if no match, remove appended card from list
+// if not match, call closeCard function to flip to back) 
+function checkMatch(openCardNames) {
+	// find length of array 
+	var totalOpen = openCardNames.length;	
+	console.log(totalOpen); // REMOVE
+	// compare last and second-to-last array entries (as using push to add cards to array
+	if (openCardNames[totalOpen-1] === openCardNames[totalOpen-2]) {
+		console.log("MATCH!"); // REMOVE
+		// reset number of card clicks 
+		numberOfCardClicks = 0;
+		// check if all cards matched, call pop-up window function
+		if ((totalOpen/2) == 8) {
+			console.log("all matches made!");
+			//function endOfGame();
+		}
+	}
+	else {
+		console.log("not a match");
+		// do not increments counters
+		// close two unmatched cards
+		flipCards(openCardNames);
+		// remove last two cards from OpenCardNames array
+		openCardNames = removeCards(openCardNames);
+		return(openCardNames);
+		console.log("unmatched done");
+	}	
+}
+
+function matchedCardsLock(openCardNames) {
+	// remove open and show classes
+	card.classList.remove("open", "show");
+	// add match class to lock card
+	card.classList.add("match"); 
+}
+
+function flipCards(openCardNames) {
+// if card symbol does not have a match
+// change from CSS card with symbol (face) to CSS for black card (back)
+	// flip card (add class="open", class="show" (see CSS)
+	card.classList.remove("open", "show");
+}
+
+function removeCards(openCardNames) {
+	// remove card from openCardNames array
+	openCardNames.slice(-2); 
+	console.log(openCardNames); // REMOVE 
+ 	return openCardNames;
+}
 
 // FUNCTIONS //
 
@@ -167,33 +233,11 @@ function resetNumberMoves() {
  * + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  * + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
 */
-function checkMatch() {
-// if match, call matchedCardsLock
-// if match, increment matchCounter
-// if no match, remove appended card from list
-// if not match, call closeCard function to flip to back) 
-
-
-}
-
-function matchedCardsLock() {
-// matchCounter = matchCounter + 1;
-
-}
-
-
-
-function closeCard() {
-// if card symbol does not have a match
-// change from CSS card with symbol (face) to CSS for black card (back)
-// remove card from openCards array -- CHECK NAME HERE
-}
-
 
 
 
 //https://albert-gonzalez.github.io/easytimer.js/
-function startTimer(){
+function startTimer() {
 // on first click (moveCounter = 1), of eventlistener, 
 // start timer
 // display timer in CSS
@@ -212,16 +256,14 @@ function resetTimer() {
 // resets timer = 00.00.00
 }
 
-// add class restart to button on pop-up window too!
-
-
 function congratsPopup() {
 	// call this function when matchCounter = 8; 
 	// launch alert with message 
 	// pop-up has play again button with class = reset
+	// add class restart to button on pop-up window too!
 }
 
-function starRating() {
+function displayStarRating() {
 // if moveCounter > Y, display one star
 // if moveCounter > X and < Y , display two stars
 // if move counter < X display three stars 
@@ -229,6 +271,5 @@ function starRating() {
 }
 
 function displayNumberMoves() {
-
-
+	// blah blah
 }
