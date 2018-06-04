@@ -10,13 +10,10 @@ var cardsHtmlCollection = document.getElementsByClassName('card');
 // Convert HTML Collection to an Array 
 // Help provided by:  https://stackoverflow.com/questions/222841/most-efficient-way-to-convert-an-htmlcollection-to-an-array
 var cardArray = [].slice.call(cardsHtmlCollection);
-
 // Create an empty array for card names (class name on i element)
 var cardNames = [];
-
 // Create an empty array for shuffled cards
 var shuffledCardNames = [];
-
 // Initialize new string variable (to hold new shuffled card HTML)
 var newCardContentHTML = '';
 
@@ -82,32 +79,25 @@ resetButton.addEventListener("click", function() {
 				totalMoveCounter = totalMoveCounter + 1
 				console.log(totalMoveCounter) // REMOVE
 				// display increase in moves 
-						// call function here
+				displayNumberMoves(totalMoveCounter);
 				clickCounter = clickCounter + 1;
-				console.log(clickCounter); // REMOVE
-		
+				console.log(clickCounter) // REMOVE 
+
 				if (clickCounter == 1) {
-					// call function to open card on click
+					// call function to open card #1 on click
 					openCard(card);
 					// call function to add card to openCardNames array 
 					openCardNames = addToOpenCardArray(card, openCardNames);
-					console.log(card);
-					console.log(clickCounter);
 				}
 				else if (clickCounter == 2) {
-					// call function to open card on click
+					// call function to open card #2 on click
 					openCard(card);
 					// call function to add card to openCardNames array 
 					openCardNames = addToOpenCardArray(card, openCardNames);
-					console.log(card);
-					console.log(clickCounter);
-					console.log(openCardNames); 
-					console.log(cardNodesArray);
-					// call match function after delay 
+					// call match function
 					checkMatch(card, openCardNames, cardNodesArray);
 					// reset clickCounter
-					clickCounter = 0; 
-					console.log(clickCounter); // REMOVE 	
+					clickCounter = 0; 	
 				} 
 			};
 		});
@@ -166,6 +156,12 @@ function resetStars() {
 function resetNumberMoves() {
 	var moves = document.querySelector('.moves'); 
 	moves.textContent = 0; 
+}
+
+// display number of moves 
+function displayNumberMoves(totalMoveCounter) {
+	var moves = document.querySelector('.moves'); 
+	moves.textContent = totalMoveCounter
 }
 
 /* 
@@ -242,10 +238,6 @@ function removeCards(openCardNames) {
 	openCardNames.pop(); 
  	return openCardNames;
 };
-
-function displayNumberMoves() {
-	// blah blah
-}
 
 
 function congratsPopup() {
