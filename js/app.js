@@ -63,6 +63,10 @@ resetButton.addEventListener("click", function() {
 	var cardNodesArray = [].slice.call(cardNodesList);
 	// create array to hold all open card names
 	var openCardNames = [];
+	// get HTML collection of stars
+	var starNodeList = document.getElementsByClassName('fa fa-star')
+	// convert start NodeList to an array to use
+	var starArray = [].slice.call(starNodeList);
 
  // Set up the event listener on each card. If a card is clicked:
  // - display the card's symbol (put this functionality in another function that you call from this one)
@@ -78,8 +82,12 @@ resetButton.addEventListener("click", function() {
 				// increment total moves
 				totalMoveCounter = totalMoveCounter + 1
 				console.log(totalMoveCounter) // REMOVE
+
 				// display increase in moves 
-				displayNumberMoves(totalMoveCounter);
+				displayNumberMoves(totalMoveCounter);	
+				// change star rating
+				displayStarRating(totalMoveCounter);
+				// increment counter
 				clickCounter = clickCounter + 1;
 				console.log(clickCounter) // REMOVE 
 
@@ -146,10 +154,20 @@ function refreshDeckHTML(shuffledCardNames, newDeck) {
 	divBody.appendChild(newDeck);
 } 
 
-// Reset stars so none are displayed
+// On reset, remove all displayed stars
 function resetStars() {
-	var stars = document.querySelector('.stars');
-	stars.remove();
+
+} 
+
+// Display number of stars based on total moves
+function displayStarRating(totalMoveCounter) {
+	// select star li
+	var star = document.querySelector('li');
+	// remove star at certain total number of clicks 
+	if (totalMoveCounter == 10 || totalMoveCounter == 20 || totalMoveCounter == 30) {
+		// remove star
+		star.remove();	
+	}	
 }
 
 // Reset number of moves to 0
@@ -206,7 +224,6 @@ function checkMatch(card, openCardNames, cardNodesArray) {
 	}	
 }; 
 
-
 // lock matching cards
 function matchedCardsLock(cardNodesArray) {
 	cardNodesArray.forEach(function(card) {
@@ -239,41 +256,30 @@ function removeCards(openCardNames) {
  	return openCardNames;
 };
 
-
 function congratsPopup() {
 	console.log("You win!"); // NEED TO BUILD OUT ALERT
 	// call this function when matchCounter = 8; 
 	// launch alert with message 
 	// pop-up has play again button with class = reset
 	// add class restart to button on pop-up window too!
-}
+};
 
 //
-
-
 //https://albert-gonzalez.github.io/easytimer.js/
 function startTimer() {
 // on first click (moveCounter = 1), of eventlistener, 
 // start timer
 // display timer in CSS
-}
+};
 
 function stopTimer() {
 // when matchCounter = 8 
 // end timer
 // display final time in CSS
-}
+};
 
 function resetTimer() {
 // when reset button is hit
 // stops timer if running
 // resets timer = 00.00.00
-}
-
-function displayStarRating() {
-// if moveCounter > Y, display one star
-// if moveCounter > X and < Y , display two stars
-// if move counter < X display three stars 
-// note:  more stars is good :-) 
-}
-
+};
