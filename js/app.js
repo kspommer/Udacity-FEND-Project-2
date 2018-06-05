@@ -154,12 +154,30 @@ function refreshDeckHTML(shuffledCardNames, newDeck) {
 	divBody.appendChild(newDeck);
 } 
 
-// On reset, remove all displayed stars
+// On click of reset, display three stars
 function resetStars() {
+    // select panel
+	var starPanel = document.querySelector('.stars'); 
+	// find number of existing stars
+	var stars = document.getElementsByClassName('fa fa-star');
+	var starsNeeded = (3-stars.length);
 
-} 
-
-// Display number of stars based on total moves
+	// loop to add up to three stars
+	for (var i=0; i<starsNeeded; i++) {
+		// create li
+		var starList = document.createElement('li'); 
+		// create and add an image with class = "fa fa-star"
+		var newStar = document.createElement('i');
+		// add classes "fa fa-star" to image element
+		newStar.classList.add("fa", "fa-star");
+		// add images to li
+		starList.appendChild(newStar);
+		// add li to ul
+		starPanel.appendChild(starList);
+	}	
+}
+ 
+// Reduce number of stars displayed based on total moves
 function displayStarRating(totalMoveCounter) {
 	// select star li
 	var star = document.querySelector('li');
