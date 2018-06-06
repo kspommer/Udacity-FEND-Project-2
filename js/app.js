@@ -33,6 +33,10 @@ var resetButton = document.querySelector(".restart");
 
 // actions driven when user hits reset button 
 resetButton.addEventListener("click", function() { 
+	resetBoard();
+});
+
+function resetBoard() {	
 	// delete existing deck displayed
 	var deck = document.querySelector('.deck');
 	deck.remove();
@@ -81,15 +85,14 @@ resetButton.addEventListener("click", function() {
 			else {
 				// increment total moves
 				totalMoveCounter = totalMoveCounter + 1
-				console.log(totalMoveCounter) // REMOVE
-
 				// display increase in moves 
 				displayNumberMoves(totalMoveCounter);	
 				// change star rating
 				displayStarRating(totalMoveCounter);
+				// calc starRating 
+				var starRating = countStars(totalMoveCounter);
 				// increment counter
 				clickCounter = clickCounter + 1;
-				console.log(clickCounter) // REMOVE 
 
 				if (clickCounter == 1) {
 					// call function to open card #1 on click
@@ -107,11 +110,18 @@ resetButton.addEventListener("click", function() {
 					// reset clickCounter
 					clickCounter = 0; 	
 				} 
-			};
+			}
+			// calculate length of openCardNames array 
+			arrayLength = openCardNames.length; 
+			// check if game is over 
+			if (arrayLength == 2) { // NEED TO CHANGE TO 16
+				var time = "00.10.11"; // NEED TO REMOVE WHEN HAVE VARIABLE 
+				// launch modal 
+				congratsPopup(time, starRating);
+			}; 
 		});
-	});		
-}); 
-
+	});			
+};	
 
 // FUNCTIONS //
 
@@ -176,7 +186,7 @@ function resetStars() {
 		starPanel.appendChild(starList);
 	}	
 }
- 
+
 // Reduce number of stars displayed based on total moves
 function displayStarRating(totalMoveCounter) {
 	// select star li
@@ -184,8 +194,20 @@ function displayStarRating(totalMoveCounter) {
 	// remove star at certain total number of clicks 
 	if (totalMoveCounter == 10 || totalMoveCounter == 20 || totalMoveCounter == 30) {
 		// remove star
-		star.remove();	
+		star.remove();
 	}	
+}
+
+function countStars(totalMoveCounter) {
+	if (totalMoveCounter<10)
+		starRating = 3; 
+	else if (totalMoveCounter>=10 && totalMoveCounter<20)
+		starRating = 2; 
+	else if (totalMoveCounter>=20 && totalMoveCounter<30)
+		starRating = 1; 
+	else if (totalMoveCounter>=30)
+		starRating = 0; 
+	return starRating; 
 }
 
 // Reset number of moves to 0
@@ -229,18 +251,16 @@ function checkMatch(card, openCardNames, cardNodesArray) {
 	var totalOpen = openCardNames.length;	
 	// compare last and second-to-last array entries (as using push to add cards to array
 	if (openCardNames[totalOpen-1] === openCardNames[totalOpen-2]) {
-		console.log("MATCH!"); // REMOVE
 		// lock the matched cards
 		cardNodesArray = matchedCardsLock(cardNodesArray);
 	}
 	else {
-		console.log("not a match"); // REMOVE 
 		// close two unmatched cards
 		cardNodesArray = flipUnmatchedCards(cardNodesArray);
 		// remove last two cards from OpenCardNames array
 		openCardNames = removeCards(openCardNames); 
 	}	
-}; 
+}; 	
 
 // lock matching cards
 function matchedCardsLock(cardNodesArray) {
@@ -255,16 +275,15 @@ function matchedCardsLock(cardNodesArray) {
 
 // flip over unmatched cards
 function flipUnmatchedCards(cardNodesArray) {
-	setTimeout(function(){ 
+	setTimeout(function() { 
 		cardNodesArray.forEach(function(card) {
 			if (card.className == "card open show") {
 				// remove class = "open" and "show"
-				card.classList.remove("open");
-				card.classList.remove("show");
+				card.classList.remove("open", "show"); 
 			}
-			return cardNodesArray
-		});
-	}, 700);	
+		return cardNodesArray
+		});	
+	}, 500); 	
 }; 
 
 // remove two unmatched cards from openCardNames array (last in array)
@@ -274,15 +293,50 @@ function removeCards(openCardNames) {
  	return openCardNames;
 };
 
-function congratsPopup() {
-	console.log("You win!"); // NEED TO BUILD OUT ALERT
-	// call this function when matchCounter = 8; 
-	// launch alert with message 
-	// pop-up has play again button with class = reset
-	// add class restart to button on pop-up window too!
+// call this function when openCardNames array length = 16 (after match function executed)
+// launch modal with message and play again button
+function congratsPopup(endTime, starRating) {
+	setTimeout(function() {  		
+		// Get the modal
+		var modal = document.getElementById("myModal");
+		// Get the paragraph in the modal 
+		var modalParagraph = document.getElementById("modalText");
+
+		var line1 = "Congratulations!<br>";
+		var line2 = "You finished the game in:  " + endTime + "<br>";
+		var line3 = "Your star rating is:  " + starRating + "<br>";
+		var line4 = "Do you want to play again?";
+
+		// Add content to the <p class=modalText> element 
+		modalParagraph.innerHTML = (line1 + line2 + line3 + line4);
+
+		// Open the modal 
+		modal.style.display = "block";
+	}, 400); 
 };
 
-//
+// Get the <span> element that closes the modal 
+var closeButton = document.querySelector(".close");
+
+// Get the button element that restarts the game 
+var restartGame = document.querySelector(".playAgain");
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// If user clicks on <span>(X), close the modal
+closeButton.addEventListener("click", function() {
+	modal.style.display = "none";
+});
+
+// If user clicks restart game button, refresh board/counter/timer
+restartGame.addEventListener("click", function() {
+	resetBoard();
+	modal.style.display = "none";
+});
+
+
+// start timer
 //https://albert-gonzalez.github.io/easytimer.js/
 function startTimer() {
 // on first click (moveCounter = 1), of eventlistener, 
