@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
-
     <div class="container">
         <header>
             <h1>Matching Game</h1>
@@ -21,9 +20,8 @@
         		<li><i class="fa fa-star"></i></li>
         		<li><i class="fa fa-star"></i></li>
         	</ul>
-
-        	<span class="moves">3</span> Moves
-
+        	<span class="moves">3</span> Moves 
+            <label id="minutes">00</label>:<label id="seconds">00</label>
             <div class="restart">
         		<i class="fa fa-repeat"></i>
         	</div>
@@ -79,8 +77,17 @@
                 <i class="fa fa-cube"></i>
             </li>
         </ul>
+        <!--Add new code for modal -->
+        <section id="myModal" class="modal">
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <p id="modalText"></p>    
+            <button class="playAgain">Restart Game</button>
+          </div>
+        </section>
     </div>
-
     <script src="js/app.js"></script>
+    </script> 
 </body>
 </html>
