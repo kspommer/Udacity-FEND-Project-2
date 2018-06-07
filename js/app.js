@@ -1,6 +1,5 @@
 // Susan Pommer 
-// FEND May 2018 
-
+// FEND May - June 2018 
 /*
  * Create a list that holds all of your cards
 */
@@ -16,60 +15,89 @@ var cardNames = [];
 var shuffledCardNames = [];
 // Initialize new string variable (to hold new shuffled card HTML)
 var newCardContentHTML = '';
+// Initialize timer variables
+var minutesLabel = document.getElementById("minutes");
+var secondsLabel = document.getElementById("seconds");
+var totalSeconds = 0;
+var timer;
 
 // Loop to get card names (class name of i element)
 for (let j = 0; j < cardArray.length; j++) {
 	var card = cardArray[j].querySelector('i');
-	// add each card to array 
+	// Add each card to array 
 	cardNames.push(card);
 }
 
-// IMPORTANT: Ensure DOM fully loaded before other actions triggered!
+// IMPORTANT! Ensure DOM fully loaded before other actions triggered!
 document.addEventListener('DOMContentLoaded', function () {
 });
 
-// reset button variable
+// Reset button variable
 var resetButton = document.querySelector(".restart");
 
-// actions driven when user hits reset button 
+// When user hits reset button, reset board, timer
 resetButton.addEventListener("click", function() { 
 	resetBoard();
 });
 
+// Get the <span> element that closes the modal 
+var closeButton = document.querySelector(".close");
+
+// Get the button element that restarts the game 
+var restartGame = document.querySelector(".playAgain");
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// If user clicks on <span>(X), close the modal
+closeButton.addEventListener("click", function() {
+	modal.style.display = "none";
+});
+
+// If user clicks restart game button, refresh board/counter/timer
+restartGame.addEventListener("click", function() {
+	resetBoard();
+	modal.style.display = "none";
+});
+
+// FUNCTIONS //
+
 function resetBoard() {	
-	// delete existing deck displayed
+	// Delete existing deck displayed
 	var deck = document.querySelector('.deck');
 	deck.remove();
 
-	// create new deck with class=deck
+	// Create new deck with class=deck
 	var newDeck = document.createElement('ul');
 	newDeck.classList.add("deck");
 
-	// call function to suffle cards
+	// Call function to suffle cards
 	shuffledCardNames = shuffle(cardNames); 
 
-	// refresh display of cards on screen
+	// Refresh display of cards on screen
 	refreshDeckHTML(shuffledCardNames, newDeck);
 
-	// remove stars and reset number of moves 
+	// Remove stars and reset number of moves 
 	resetStars();
 	resetNumberMoves();
 	
-	// initialize counters
-	var totalMoveCounter = 0;
-	var clickCounter = 0;
+	// ADD TIMER RESET HERE
+	var totalSeconds = 0;
 
-	// ADD STOP AND RESET TIMER
+	// (Re)Initialize counters
+	var totalClicks = 0;
+	var totalMoves = 0;
+	var clickCounter = 0;
 
 	// Assign variable to all cards 
 	var cardNodesList = document.querySelectorAll(".card");
-	// convert NodeList to an array to use
+	// Convert NodeList to an array to use
 	var cardNodesArray = [].slice.call(cardNodesList);
-	// create array to hold all open card names
+	// Create array to hold all open card names
 	var openCardNames = [];
-	// get HTML collection of stars
+	// Get HTML collection of stars
 	var starNodeList = document.getElementsByClassName('fa fa-star')
-	// convert start NodeList to an array to use
+	// Convert start NodeList to an array to use
 	var starArray = [].slice.call(starNodeList);
 
  // Set up the event listener on each card. If a card is clicked:
@@ -83,17 +111,21 @@ function resetBoard() {
 				return; 
 			}
 			else {
-				// increment total moves
-				totalMoveCounter = totalMoveCounter + 1
-				// display increase in moves 
-				displayNumberMoves(totalMoveCounter);	
-				// change star rating
-				displayStarRating(totalMoveCounter);
-				// calc starRating 
-				var starRating = countStars(totalMoveCounter);
-				// increment counter
-				clickCounter = clickCounter + 1;
+				// increment clickCounter
+				// increment total clicks
+				totalClicks = totalClicks + 1
+				totalMoves = totalClicks / 2
 
+				if ((totalClicks % 2) == 0) {
+					// display increase in moves 
+					displayNumberMoves(totalMoves);	
+					// change star rating
+					displayStarRating(totalMoves);	
+					// calc starRating 
+					var starRating = countStars(totalMoves);
+				}
+				// increment clickcounter
+				clickCounter = clickCounter + 1;
 				if (clickCounter == 1) {
 					// call function to open card #1 on click
 					openCard(card);
@@ -110,20 +142,27 @@ function resetBoard() {
 					// reset clickCounter
 					clickCounter = 0; 	
 				} 
+			}		
+			// on first click (totalMoveCounter = 1), restart timer
+			if (totalClicks == 1) {
+				timer = setInterval(setTime, 1000); 
+				card.addEventListener("click", function() {
+					setTime(timer); 
+				});
 			}
+
 			// calculate length of openCardNames array 
 			arrayLength = openCardNames.length; 
 			// check if game is over 
 			if (arrayLength == 2) { // NEED TO CHANGE TO 16
-				var time = "00.10.11"; // NEED TO REMOVE WHEN HAVE VARIABLE 
-				// launch modal 
+				var time = getTime(); 
+				clearInterval(timer); 
+				// Launch congrats modal 
 				congratsPopup(time, starRating);
 			}; 
 		});
 	});			
 };	
-
-// FUNCTIONS //
 
 // Display the cards on the page 
 // Shuffle the list of cards using provided "shuffle" method 
@@ -301,7 +340,6 @@ function congratsPopup(endTime, starRating) {
 		var modal = document.getElementById("myModal");
 		// Get the paragraph in the modal 
 		var modalParagraph = document.getElementById("modalText");
-
 		var line1 = "Congratulations!<br>";
 		var line2 = "You finished the game in:  " + endTime + "<br>";
 		var line3 = "Your star rating is:  " + starRating + "<br>";
@@ -315,43 +353,33 @@ function congratsPopup(endTime, starRating) {
 	}, 400); 
 };
 
-// Get the <span> element that closes the modal 
-var closeButton = document.querySelector(".close");
+// Timer functions
+// refrence:  https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
+function setTime() {
+	// increment total seconds
+	++totalSeconds;
+	// set what is displayed on page 
+ 	secondsLabel.innerHTML = pad(totalSeconds % 60); 
+  	//seconds = pad(totalSeconds % 60); 
+  	minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
+  	//minutes = pad(parseInt(totalSeconds / 60)); 
+   	//time = minutes + ":" + seconds
+   	//return time;
+}
 
-// Get the button element that restarts the game 
-var restartGame = document.querySelector(".playAgain");
+function getTime() {
+	seconds = pad(totalSeconds % 60); 
+	minutes = pad(parseInt(totalSeconds / 60)); 
+	time = minutes + ":" + seconds
+   	return time;
+}
 
-// Get the modal
-var modal = document.getElementById("myModal");
-
-// If user clicks on <span>(X), close the modal
-closeButton.addEventListener("click", function() {
-	modal.style.display = "none";
-});
-
-// If user clicks restart game button, refresh board/counter/timer
-restartGame.addEventListener("click", function() {
-	resetBoard();
-	modal.style.display = "none";
-});
-
-
-// start timer
-//https://albert-gonzalez.github.io/easytimer.js/
-function startTimer() {
-// on first click (moveCounter = 1), of eventlistener, 
-// start timer
-// display timer in CSS
-};
-
-function stopTimer() {
-// when matchCounter = 8 
-// end timer
-// display final time in CSS
-};
-
-function resetTimer() {
-// when reset button is hit
-// stops timer if running
-// resets timer = 00.00.00
-};
+function pad(val) {
+	var valString = val + ""
+	if (valString.length < 2) {
+    	return "0" + valString;
+  	} 
+  	else {
+    	return valString;
+  	}
+}	
