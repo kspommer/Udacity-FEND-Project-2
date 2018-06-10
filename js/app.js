@@ -62,7 +62,7 @@ restartGame.addEventListener("click", function() {
 
 // FUNCTIONS //
 
-function resetBoard() {	
+function resetBoard() {
 	// Delete existing deck displayed
 	var deck = document.querySelector('.deck');
 	deck.remove();
@@ -72,15 +72,15 @@ function resetBoard() {
 	newDeck.classList.add("deck");
 
 	// Call function to suffle cards
-	shuffledCardNames = shuffle(cardNames); 
+	shuffledCardNames = shuffle(cardNames);
 
 	// Refresh display of cards on screen
 	refreshDeckHTML(shuffledCardNames, newDeck);
 
-	// Remove stars and reset number of moves 
+	// Remove stars and reset number of moves
 	resetStars();
 	resetNumberMoves();
-	
+
 	// ADD TIMER RESET HERE
 	var totalSeconds = 0;
 
@@ -89,14 +89,14 @@ function resetBoard() {
 	var totalMoves = 0;
 	var clickCounter = 0;
 
-	// Assign variable to all cards 
+	// Assign variable to all cards
 	var cardNodesList = document.querySelectorAll(".card");
 	// Convert NodeList to an array to use
 	var cardNodesArray = [].slice.call(cardNodesList);
 	// Create array to hold all open card names
 	var openCardNames = [];
 	// Get HTML collection of stars
-	var starNodeList = document.getElementsByClassName('fa fa-star')
+	var starNodeList = document.getElementsByClassName('fa fa-star');
 	// Convert start NodeList to an array to use
 	var starArray = [].slice.call(starNodeList);
 
@@ -108,20 +108,20 @@ function resetBoard() {
 		card.addEventListener("click", function() {
 			// if click on card that is already open, take no action
 			if ((card.className == "card open show") || (card.className == "card open show match")) {
-				return; 
+				return;
 			}
 			else {
 				// increment clickCounter
 				// increment total clicks
-				totalClicks = totalClicks + 1
-				totalMoves = totalClicks / 2
+				totalClicks = totalClicks + 1;
+				totalMoves = totalClicks / 2;
 
 				if ((totalClicks % 2) == 0) {
 					// display increase in moves 
-					displayNumberMoves(totalMoves);	
+					displayNumberMoves(totalMoves);
 					// change star rating
 					displayStarRating(totalMoves);	
-					// calc starRating 
+					// calc starRating
 					var starRating = countStars(totalMoves);
 				}
 				// increment clickcounter
@@ -129,47 +129,45 @@ function resetBoard() {
 				if (clickCounter == 1) {
 					// call function to open card #1 on click
 					openCard(card);
-					// call function to add card to openCardNames array 
+					// call function to add card to openCardNames array
 					openCardNames = addToOpenCardArray(card, openCardNames);
 				}
 				else if (clickCounter == 2) {
 					// call function to open card #2 on click
 					openCard(card);
-					// call function to add card to openCardNames array 
+					// call function to add card to openCardNames array
 					openCardNames = addToOpenCardArray(card, openCardNames);
 					// call match function
 					checkMatch(card, openCardNames, cardNodesArray);
 					// reset clickCounter
-					clickCounter = 0; 	
-				} 
-			}		
+					clickCounter = 0;
+				}
+			}
 			// on first click (totalMoveCounter = 1), restart timer
 			if (totalClicks == 1) {
-				timer = setInterval(setTime, 1000); 
+				timer = setInterval(setTime, 1000);
 				card.addEventListener("click", function() {
-					setTime(timer); 
+					setTime(timer);
 				});
 			}
-
-			// calculate length of openCardNames array 
-			arrayLength = openCardNames.length; 
-			// check if game is over 
+			// calculate length of openCardNames array
+			arrayLength = openCardNames.length;
+			// check if game is over
 			if (arrayLength == 4) { // NEED TO CHANGE TO 16
-				var time = getTime(); 
+				var time = getTime();
 				clearInterval(timer); 
-				// Launch congrats modal 
+				// Launch congrats modal
 				congratsPopup(time, starRating);
-			}; 
-		});
-	});			
-};	
+			}
+		})
+	})
+}
 
-// Display the cards on the page 
-// Shuffle the list of cards using provided "shuffle" method 
+// Display the cards on the page
+// Shuffle the list of cards using provided "shuffle" method
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex;
-
     while (currentIndex !== 0) {
         randomIndex = Math.floor(Math.random() * currentIndex);
         currentIndex -= 1;
@@ -186,35 +184,34 @@ function shuffle(array) {
 	// display new reshuffled cards
 function refreshDeckHTML(shuffledCardNames, newDeck) {
 	for (i = 0; i < shuffledCardNames.length; i++) {
-		// create new li element 
+		// create new li element
 		var newCard = document.createElement('li')
 		// add "class=card" to li element
 		newCard.classList.add("card");
 		// create new <i> element with class fa and card name
 		// e.g. <i class "fa fa-bomb"></i>
 		var cardContent = shuffledCardNames[i];
-		// insert i element into li element  
+		// insert i element into li element
 		newCard.appendChild(cardContent);
 		// add to card newDeck
 		newDeck.appendChild(newCard);
 	}
 	// add new deck to <div class="container"> to get to display
-	var divBody = document.querySelector('.container')
+	var divBody = document.querySelector('.container');
 	divBody.appendChild(newDeck);
-} 
+}
 
 // On click of reset, display three stars
 function resetStars() {
     // select panel
-	var starPanel = document.querySelector('.stars'); 
+	var starPanel = document.querySelector('.stars');
 	// find number of existing stars
 	var stars = document.getElementsByClassName('fa fa-star');
 	var starsNeeded = (3-stars.length);
-
 	// loop to add up to three stars
 	for (var i=0; i<starsNeeded; i++) {
 		// create li
-		var starList = document.createElement('li'); 
+		var starList = document.createElement('li');
 		// create and add an image with class = "fa fa-star"
 		var newStar = document.createElement('i');
 		// add classes "fa fa-star" to image element
@@ -223,41 +220,41 @@ function resetStars() {
 		starList.appendChild(newStar);
 		// add li to ul
 		starPanel.appendChild(starList);
-	}	
+	}
 }
 
 // Reduce number of stars displayed based on total moves
 function displayStarRating(totalMoveCounter) {
 	// select star li
 	var star = document.querySelector('li');
-	// remove star at certain total number of clicks 
+	// remove star at certain total number of clicks
 	if (totalMoveCounter == 5 || totalMoveCounter == 10 || totalMoveCounter == 20) {
 		// remove star
 		star.remove();
-	}	
+	}
 }
 
 function countStars(totalMoveCounter) {
 	if (totalMoveCounter<5)
-		starRating = 3; 
+		starRating = 3;
 	else if (totalMoveCounter>=5 && totalMoveCounter<10)
-		starRating = 2; 
+		starRating = 2;
 	else if (totalMoveCounter>=10 && totalMoveCounter<20)
-		starRating = 1; 
+		starRating = 1;
 	else if (totalMoveCounter>=20)
-		starRating = 0; 
-	return starRating; 
+		starRating = 0;
+	return starRating;
 }
 
 // Reset number of moves to 0
 function resetNumberMoves() {
-	var moves = document.querySelector('.moves'); 
+	var moves = document.querySelector('.moves');
 	moves.textContent = 0; 
 }
 
-// display number of moves 
+// display number of moves
 function displayNumberMoves(totalMoveCounter) {
-	var moves = document.querySelector('.moves'); 
+	var moves = document.querySelector('.moves');
 	moves.textContent = totalMoveCounter
 }
 
@@ -268,26 +265,26 @@ function displayNumberMoves(totalMoveCounter) {
  * + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  * + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
 */
-// flip open card which is not already open or matched on click 
+// flip open card which is not already open or matched on click
 function openCard(card) {
-	// flip card (add class="open", class="show" (see CSS)) 
+	// flip card (add class="open", class="show" (see CSS))
 	card.classList.add("open", "show");
-};
+}
 
 function addToOpenCardArray(card, openCardNames) {
-	// determine open card name 
+	// determine open card name
 	var openCard = card.querySelector("i").className;
 	// add open card to open card array
-	openCardNames.push(openCard); 
-	return openCardNames; 
-};
+	openCardNames.push(openCard);
+	return openCardNames;
+}
 
 // if match, call matchedCardsLock
 // if no match, remove appended card from list
-// if no match, call closeCard function to flip to back 
+// if no match, call closeCard function to flip to back
 function checkMatch(card, openCardNames, cardNodesArray) {
-	// find length of array 
-	var totalOpen = openCardNames.length;	
+	// find length of array
+	var totalOpen = openCardNames.length;
 	// compare last and second-to-last array entries (as using push to add cards to array
 	if (openCardNames[totalOpen-1] === openCardNames[totalOpen-2]) {
 		// lock the matched cards
@@ -297,9 +294,9 @@ function checkMatch(card, openCardNames, cardNodesArray) {
 		// close two unmatched cards
 		cardNodesArray = flipUnmatchedCards(cardNodesArray);
 		// remove last two cards from OpenCardNames array
-		openCardNames = removeCards(openCardNames); 
-	}	
-}; 	
+		openCardNames = removeCards(openCardNames);
+	}
+}
 
 // lock matching cards
 function matchedCardsLock(cardNodesArray) {
@@ -309,48 +306,48 @@ function matchedCardsLock(cardNodesArray) {
 			card.classList.add("match");
 		}
 	return cardNodesArray;
-	});
-};
+	})
+}
 
 // flip over unmatched cards
 function flipUnmatchedCards(cardNodesArray) {
-	setTimeout(function() { 
+	setTimeout(function() {
 		cardNodesArray.forEach(function(card) {
 			if (card.className == "card open show") {
 				// remove class = "open" and "show"
-				card.classList.remove("open", "show"); 
+				card.classList.remove("open", "show");
 			}
 		return cardNodesArray;
-		})	
+		})
 	}, 500)
-} 
+}
 
 // remove two unmatched cards from openCardNames array (last in array)
 function removeCards(openCardNames) {
 	openCardNames.pop();
-	openCardNames.pop(); 
+	openCardNames.pop();
  	return openCardNames;
 }
 
 // call this function when openCardNames array length = 16 (after match function executed)
 // launch modal with message and play again button
 function congratsPopup(endTime, starRating) {
-	setTimeout(function() {  		
+	setTimeout(function() {
 		// Get the modal
 		var modal = document.getElementById("myModal");
-		// Get the paragraph in the modal 
+		// Get the paragraph in the modal
 		var modalParagraph = document.getElementById("modalText");
 		var line1 = "Congratulations!<br>";
 		var line2 = "You finished the game in:  " + endTime + "<br>";
 		var line3 = "Your star rating is:  " + starRating + "<br>";
 		var line4 = "Do you want to play again?";
 
-		// Add content to the <p class=modalText> element 
+		// Add content to the <p class=modalText> element
 		modalParagraph.innerHTML = (line1 + line2 + line3 + line4);
 
-		// Open the modal 
+		// Open the modal
 		modal.style.display = "block";
-	}, 400) 
+	}, 400)
 }
 
 // Timer functions
@@ -358,16 +355,16 @@ function congratsPopup(endTime, starRating) {
 function setTime() {
 	// increment total seconds
 	++totalSeconds;
-	// set what is displayed on page 
- 	secondsLabel.innerHTML = pad(totalSeconds % 60); 
+	// set what is displayed on page
+ 	secondsLabel.innerHTML = pad(totalSeconds % 60);
   	minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
 }
 
 function getTime() {
 	// get minutes and seconds
-	seconds = pad(totalSeconds % 60); 
-	minutes = pad(parseInt(totalSeconds / 60)); 
-	// create time string and return 	
+	seconds = pad(totalSeconds % 60);
+	minutes = pad(parseInt(totalSeconds / 60));
+	// create time string and return
 	time = minutes + ":" + seconds;
    	return time;
 }
@@ -376,8 +373,8 @@ function pad(val) {
 	var valString = val + "";
 	if (valString.length < 2) {
     	return "0" + valString;
-  	} 
+  	}
   	else {
     	return valString;
   	}
-}	
+}
