@@ -107,6 +107,7 @@ h1 {
     float: right;
     cursor: pointer;
 }
+/* FORMAT ISSUE */
 /* Added CSS for timer */
 .minutes {
     padding-left: 20px;
@@ -131,17 +132,20 @@ h1 {
 
 /* Added Modal CSS Content */
 .modal-content {
-    background-color: #00ff00;
+    background-color: rgba(0,0,0,0.9); /* Black w/ some opacity */
     margin: auto;
     padding: 20px;
-    border: 1px solid #00ff00;
+    border: 1px solid #02b3e4;
+    border-width: 2px;
     width: 50%;
 }
 
 /* Modal text format */
-.modalText {
-    color: #000000;
-    font-size: 28px;
+#modalText {
+    color: #ffffff;
+    font-size: 20px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
 }
 
 /* Modal close button */
