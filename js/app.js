@@ -325,6 +325,7 @@ function removeCards(openCardNames) {
 
 // call this function when openCardNames array length = 16 (after match function executed)
 // launch modal with message and play again button
+// reference:  forgot to document where I learned about modals (sorry!)
 function congratsPopup(endTime, starRating) {
 	setTimeout(function() {
 		// Get the modal
@@ -358,7 +359,7 @@ function stopTimer() {
     clearInterval(timer);
 }
 
-// refrence:  https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
+// reference:  https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
 function setTime() {
 	// increment total seconds
 	++totalSeconds;
