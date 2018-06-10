@@ -1,11 +1,9 @@
 // Susan Pommer 
 // FEND May - June 2018 
-/*
- * Create a list that holds all of your cards
-*/
- // Build HTML collection of elements with class = cards
-var cardsHtmlCollection = document.getElementsByClassName('card');
 
+//Create a list that holds all of your cards
+// Build HTML collection of elements with class = cards
+var cardsHtmlCollection = document.getElementsByClassName('card');
 // Convert HTML Collection to an Array 
 // Help provided by:  https://stackoverflow.com/questions/222841/most-efficient-way-to-convert-an-htmlcollection-to-an-array
 var cardArray = [].slice.call(cardsHtmlCollection);
@@ -18,8 +16,8 @@ var newCardContentHTML = '';
 // Initialize timer variables
 var minutesLabel = document.getElementById("minutes");
 var secondsLabel = document.getElementById("seconds");
+var timer = 0;
 var totalSeconds = 0;
-var timer;
 
 // Loop to get card names (class name of i element)
 for (let j = 0; j < cardArray.length; j++) {
@@ -36,7 +34,9 @@ document.addEventListener('DOMContentLoaded', function () {
 var resetButton = document.querySelector(".restart");
 
 // When user hits reset button, reset board, timer
-resetButton.addEventListener("click", function() { 
+resetButton.addEventListener("click", function() {
+	stopTimer();
+	resetTimer();
 	resetBoard();
 });
 
@@ -56,34 +56,30 @@ closeButton.addEventListener("click", function() {
 
 // If user clicks restart game button, refresh board/counter/timer
 restartGame.addEventListener("click", function() {
-	resetBoard();
 	modal.style.display = "none";
+	stopTimer();
+	resetTimer(); 
+	resetBoard();
 });
 
+//////////////////////
 // FUNCTIONS //
-
+//////////////////////
 function resetBoard() {
 	// Delete existing deck displayed
 	var deck = document.querySelector('.deck');
 	deck.remove();
-
 	// Create new deck with class=deck
 	var newDeck = document.createElement('ul');
 	newDeck.classList.add("deck");
-
-	// Call function to suffle cards
+	// Call function to shuffle cards
 	shuffledCardNames = shuffle(cardNames);
-
 	// Refresh display of cards on screen
 	refreshDeckHTML(shuffledCardNames, newDeck);
 
 	// Remove stars and reset number of moves
 	resetStars();
 	resetNumberMoves();
-
-	// ADD TIMER RESET HERE
-	var totalSeconds = 0;
-
 	// (Re)Initialize counters
 	var totalClicks = 0;
 	var totalMoves = 0;
@@ -111,11 +107,10 @@ function resetBoard() {
 				return;
 			}
 			else {
-				// increment clickCounter
-				// increment total clicks
+				// increment clickCounter and totalClicks counters
 				totalClicks = totalClicks + 1;
 				totalMoves = totalClicks / 2;
-
+				// assess if need to increment numbers of moves
 				if ((totalClicks % 2) == 0) {
 					// display increase in moves 
 					displayNumberMoves(totalMoves);
@@ -141,21 +136,22 @@ function resetBoard() {
 					checkMatch(card, openCardNames, cardNodesArray);
 					// reset clickCounter
 					clickCounter = 0;
-				}
+				}	
 			}
 			// on first click (totalMoveCounter = 1), restart timer
 			if (totalClicks == 1) {
-				timer = setInterval(setTime, 1000);
-				card.addEventListener("click", function() {
-					setTime(timer);
-				});
+				//card.addEventListener("click", function() {
+				startTimer();
+				//})
 			}
 			// calculate length of openCardNames array
 			arrayLength = openCardNames.length;
 			// check if game is over
-			if (arrayLength == 4) { // NEED TO CHANGE TO 16
-				var time = getTime();
-				clearInterval(timer); 
+			if (arrayLength == 2) { // NEED TO CHANGE TO 16
+				// stop timer
+				stopTimer(); 
+				// get current time
+				var time = getTime(totalSeconds);
 				// Launch congrats modal
 				congratsPopup(time, starRating);
 			}
@@ -350,7 +346,20 @@ function congratsPopup(endTime, starRating) {
 	}, 400)
 }
 
-// Timer functions
+// TIMER FUNCTIONS // 
+ function startTimer() {
+ 	// reset timer variables
+ 	totalSeconds = 0;
+   	timer = setInterval(setTime, 1000);
+   	// restart timer
+    setTime();
+ }
+
+function stopTimer() {
+	// clear timer
+    clearInterval(timer);
+}
+
 // refrence:  https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
 function setTime() {
 	// increment total seconds
@@ -360,7 +369,13 @@ function setTime() {
   	minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
 }
 
-function getTime() {
+function resetTimer() {
+	// zero out what is displayed on page
+ 	secondsLabel.innerHTML = "00";
+  	minutesLabel.innerHTML = "00";
+}
+
+function getTime() {  // total seconds? 
 	// get minutes and seconds
 	seconds = pad(totalSeconds % 60);
 	minutes = pad(parseInt(totalSeconds / 60));
