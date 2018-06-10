@@ -154,7 +154,7 @@ function resetBoard() {
 			// calculate length of openCardNames array 
 			arrayLength = openCardNames.length; 
 			// check if game is over 
-			if (arrayLength == 2) { // NEED TO CHANGE TO 16
+			if (arrayLength == 4) { // NEED TO CHANGE TO 16
 				var time = getTime(); 
 				clearInterval(timer); 
 				// Launch congrats modal 
@@ -231,20 +231,20 @@ function displayStarRating(totalMoveCounter) {
 	// select star li
 	var star = document.querySelector('li');
 	// remove star at certain total number of clicks 
-	if (totalMoveCounter == 10 || totalMoveCounter == 20 || totalMoveCounter == 30) {
+	if (totalMoveCounter == 5 || totalMoveCounter == 10 || totalMoveCounter == 20) {
 		// remove star
 		star.remove();
 	}	
 }
 
 function countStars(totalMoveCounter) {
-	if (totalMoveCounter<10)
+	if (totalMoveCounter<5)
 		starRating = 3; 
-	else if (totalMoveCounter>=10 && totalMoveCounter<20)
+	else if (totalMoveCounter>=5 && totalMoveCounter<10)
 		starRating = 2; 
-	else if (totalMoveCounter>=20 && totalMoveCounter<30)
+	else if (totalMoveCounter>=10 && totalMoveCounter<20)
 		starRating = 1; 
-	else if (totalMoveCounter>=30)
+	else if (totalMoveCounter>=20)
 		starRating = 0; 
 	return starRating; 
 }
@@ -308,7 +308,7 @@ function matchedCardsLock(cardNodesArray) {
 			// after determined a match, add class = "match"
 			card.classList.add("match");
 		}
-	return cardNodesArray
+	return cardNodesArray;
 	});
 };
 
@@ -320,17 +320,17 @@ function flipUnmatchedCards(cardNodesArray) {
 				// remove class = "open" and "show"
 				card.classList.remove("open", "show"); 
 			}
-		return cardNodesArray
-		});	
-	}, 500); 	
-}; 
+		return cardNodesArray;
+		})	
+	}, 500)
+} 
 
 // remove two unmatched cards from openCardNames array (last in array)
 function removeCards(openCardNames) {
 	openCardNames.pop();
 	openCardNames.pop(); 
  	return openCardNames;
-};
+}
 
 // call this function when openCardNames array length = 16 (after match function executed)
 // launch modal with message and play again button
@@ -350,8 +350,8 @@ function congratsPopup(endTime, starRating) {
 
 		// Open the modal 
 		modal.style.display = "block";
-	}, 400); 
-};
+	}, 400) 
+}
 
 // Timer functions
 // refrence:  https://stackoverflow.com/questions/5517597/plain-count-up-timer-in-javascript
@@ -360,22 +360,20 @@ function setTime() {
 	++totalSeconds;
 	// set what is displayed on page 
  	secondsLabel.innerHTML = pad(totalSeconds % 60); 
-  	//seconds = pad(totalSeconds % 60); 
   	minutesLabel.innerHTML = pad(parseInt(totalSeconds / 60));
-  	//minutes = pad(parseInt(totalSeconds / 60)); 
-   	//time = minutes + ":" + seconds
-   	//return time;
 }
 
 function getTime() {
+	// get minutes and seconds
 	seconds = pad(totalSeconds % 60); 
 	minutes = pad(parseInt(totalSeconds / 60)); 
-	time = minutes + ":" + seconds
+	// create time string and return 	
+	time = minutes + ":" + seconds;
    	return time;
 }
 
 function pad(val) {
-	var valString = val + ""
+	var valString = val + "";
 	if (valString.length < 2) {
     	return "0" + valString;
   	} 
