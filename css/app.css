@@ -107,8 +107,7 @@ h1 {
     float: right;
     cursor: pointer;
 }
-/* FORMAT ISSUE */
-/* Added CSS for timer */
+
 .minutes {
     padding-left: 20px;
 }
@@ -130,7 +129,7 @@ h1 {
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
-/* Added Modal CSS Content */
+/* Modal content */
 .modal-content {
     background-color: rgba(0,0,0,0.9); /* Black w/ some opacity */
     margin: auto;
@@ -168,8 +167,3 @@ h1 {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-
-
-
-
-
