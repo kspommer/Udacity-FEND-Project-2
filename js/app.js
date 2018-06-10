@@ -140,18 +140,16 @@ function resetBoard() {
 			}
 			// on first click (totalMoveCounter = 1), restart timer
 			if (totalClicks == 1) {
-				//card.addEventListener("click", function() {
-				startTimer();
-				//})
+				startTimer(); 
 			}
 			// calculate length of openCardNames array
 			arrayLength = openCardNames.length;
 			// check if game is over
-			if (arrayLength == 2) { // NEED TO CHANGE TO 16
+			if (arrayLength == 16) { // total number of cards in array when 8 pairs are matched
 				// stop timer
 				stopTimer(); 
 				// get current time
-				var time = getTime(totalSeconds);
+				var time = getTime();
 				// Launch congrats modal
 				congratsPopup(time, starRating);
 			}
@@ -224,20 +222,20 @@ function displayStarRating(totalMoveCounter) {
 	// select star li
 	var star = document.querySelector('li');
 	// remove star at certain total number of clicks
-	if (totalMoveCounter == 5 || totalMoveCounter == 10 || totalMoveCounter == 20) {
+	if (totalMoveCounter == 10 || totalMoveCounter == 20 || totalMoveCounter == 30) {
 		// remove star
 		star.remove();
 	}
 }
 
 function countStars(totalMoveCounter) {
-	if (totalMoveCounter<5)
+	if (totalMoveCounter<10)
 		starRating = 3;
-	else if (totalMoveCounter>=5 && totalMoveCounter<10)
-		starRating = 2;
 	else if (totalMoveCounter>=10 && totalMoveCounter<20)
+		starRating = 2;
+	else if (totalMoveCounter>=20 && totalMoveCounter<30)
 		starRating = 1;
-	else if (totalMoveCounter>=20)
+	else if (totalMoveCounter>=30)
 		starRating = 0;
 	return starRating;
 }
@@ -375,7 +373,7 @@ function resetTimer() {
   	minutesLabel.innerHTML = "00";
 }
 
-function getTime() {  // total seconds? 
+function getTime() { 
 	// get minutes and seconds
 	seconds = pad(totalSeconds % 60);
 	minutes = pad(parseInt(totalSeconds / 60));
